@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veille Emploi — Marie Adrait</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f0f12;--card:#1a1a22;--border:#2a2a35;--text:#e8e8ed;--text2:#9a9ab0;--text3:#6a6a80;--accent:#6366f1;--accent2:#818cf8;--green:#22c55e;--orange:#f59e0b;--red:#ef4444;--pink:#ec4899;--radius:12px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:var(--accent2);text-decoration:none;transition:color .2s}
+a:hover{color:#a5b4fc}
+.container{max-width:1200px;margin:0 auto;padding:24px}
+header{padding:48px 0 32px;border-bottom:1px solid var(--border);margin-bottom:32px}
+header .date{font-size:13px;color:var(--accent2);font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+header h1{font-size:32px;font-weight:700;margin-bottom:6px}
+header p{color:var(--text2);font-size:15px;max-width:700px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:32px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center}
+.stat-card .val{font-size:28px;font-weight:700;color:var(--accent2)}
+.stat-card .val.green{color:var(--green)}
+.stat-card .val.orange{color:var(--orange)}
+.stat-card .label{font-size:12px;color:var(--text2);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;align-items:center}
+.filters span{font-size:13px;color:var(--text3);margin-right:8px}
+.pill{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .2s}
+.pill:hover{border-color:var(--accent);color:var(--text)}
+.pill.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.search-bar{width:100%;padding:12px 16px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:14px;margin-bottom:24px;outline:none;transition:border .2s}
+.search-bar:focus{border-color:var(--accent)}
+.offers{display:flex;flex-direction:column;gap:16px}
+.offer-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s,transform .15s}
+.offer-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.offer-head{padding:20px 24px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;cursor:pointer}
+.offer-head .left{flex:1}
+.offer-head .company{font-size:12px;color:var(--accent2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.offer-head h3{font-size:17px;font-weight:600;margin-bottom:8px}
+.offer-head .meta{display:flex;gap:8px;flex-wrap:wrap}
+.tag{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:500;background:rgba(99,102,241,.15);color:var(--accent2)}
+.tag.cdi{background:rgba(34,197,94,.15);color:var(--green)}
+.tag.cdd{background:rgba(245,158,11,.15);color:var(--orange)}
+.tag.urgent{background:rgba(239,68,68,.15);color:var(--red)}
+.score-box{display:flex;flex-direction:column;align-items:center;min-width:64px}
+.score-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;border:3px solid}
+.score-high{border-color:var(--green);color:var(--green)}
+.score-mid{border-color:var(--accent2);color:var(--accent2)}
+.score-low{border-color:var(--orange);color:var(--orange)}
+.score-box .lbl{font-size:10px;color:var(--text3);margin-top:4px}
+.offer-body{padding:0 24px 20px;display:none}
+.offer-body.open{display:block}
+.offer-detail{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:700px){.offer-detail{grid-template-columns:1fr}}
+.detail-section h4{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;font-weight:600}
+.match-list{list-style:none}
+.match-list li{position:relative;padding-left:16px;margin-bottom:6px;font-size:13px;color:var(--text2);line-height:1.5}
+.match-list li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.info-item .k{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.3px}
+.info-item .v{font-size:14px;color:var(--text);font-weight:500}
+.tags-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.btn-apply{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;background:var(--accent);color:#fff;border-radius:8px;font-size:13px;font-weight:600;margin-top:16px;transition:background .2s}
+.btn-apply:hover{background:var(--accent2);color:#fff}
+.btn-apply svg{width:14px;height:14px}
+.divider{height:1px;background:var(--border);margin:16px 0}
+footer{text-align:center;padding:48px 0 32px;color:var(--text3);font-size:13px}
+.chevron{transition:transform .2s;color:var(--text3)}
+.chevron.open{transform:rotate(180deg)}
+.score-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:12px}
+.score-bar-fill{height:100%;border-radius:3px;transition:width .4s ease}
+.nav{display:flex;gap:0;margin-bottom:32px;border-bottom:1px solid var(--border)}
+.nav-btn{padding:12px 24px;font-size:14px;font-weight:600;color:var(--text3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .2s}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{color:var(--accent2);border-bottom-color:var(--accent2)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.cv-header{display:flex;gap:32px;align-items:flex-start;margin-bottom:32px}
+@media(max-width:700px){.cv-header{flex-direction:column}}
+.cv-avatar{width:100px;height:100px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:700;color:#fff;flex-shrink:0}
+.cv-info{flex:1}
+.cv-info h2{font-size:24px;font-weight:700;margin-bottom:4px}
+.cv-info .cv-subtitle{font-size:15px;color:var(--accent2);margin-bottom:8px}
+.cv-info .cv-contact{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text2)}
+.cv-info .cv-contact span{display:flex;align-items:center;gap:4px}
+.cv-bio{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:32px;max-width:800px;border-left:3px solid var(--accent);padding-left:16px}
+.cv-section{margin-bottom:32px}
+.cv-section h3{font-size:14px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.exp-card{display:flex;gap:16px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.04)}
+.exp-card:last-child{border-bottom:none;padding-bottom:0;margin-bottom:0}
+.exp-date{min-width:130px;font-size:12px;color:var(--text3);font-weight:500;padding-top:2px}
+.exp-date .dur{display:block;font-size:11px;color:var(--text3);margin-top:2px}
+.exp-body h4{font-size:15px;font-weight:600;margin-bottom:2px}
+.exp-body .exp-company{font-size:13px;color:var(--accent2);margin-bottom:6px}
+.exp-body ul{list-style:none;padding:0}
+.exp-body li{position:relative;padding-left:14px;font-size:13px;color:var(--text2);margin-bottom:4px;line-height:1.5}
+.exp-body li::before{content:"";position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.skill-group h4{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.skill-tags{display:flex;gap:6px;flex-wrap:wrap}
+.edu-item{display:flex;gap:16px;margin-bottom:12px}
+.edu-item .edu-year{min-width:80px;font-size:12px;color:var(--text3);font-weight:500;padding-top:2px}
+.edu-item .edu-detail{font-size:14px}
+.edu-item .edu-school{font-size:12px;color:var(--text2)}
+.lang-row{display:flex;gap:24px;flex-wrap:wrap}
+.lang-item{display:flex;align-items:center;gap:8px}
+.lang-level{font-size:12px;color:var(--text3)}
+.interests-row{display:flex;gap:8px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<div class="date">Veille du 9 septembre 2026</div>
+<h1>Marie Adrait &mdash; Tableau de bord emploi</h1>
+<p>Cheffe de Projet Audiovisuel &amp; Production de Contenu &bull; Paris / &Icirc;le-de-France &bull; 4 ans d'exp&eacute;rience &bull; MBA EFAP</p>
+</header>
+<nav class="nav">
+<button class="nav-btn active" onclick="switchTab('offres')">Offres d'emploi</button>
+<button class="nav-btn" onclick="switchTab('cv')">CV de Marie</button>
+</nav>
+<div id="tab-offres" class="tab-content active">
+<div id="stats" class="stats"></div>
+<input type="text" class="search-bar" id="search" placeholder="Rechercher par poste, entreprise, secteur...">
+<div class="filters" id="filters"></div>
+<div class="offers" id="offers"></div>
+</div>
+<div id="tab-cv" class="tab-content">
+<div class="cv-header">
+<div class="cv-avatar">MA</div>
+<div class="cv-info">
+<h2>Marie Adrait</h2>
+<div class="cv-subtitle">Cheffe de Projet Audiovisuel &amp; Production de Contenu</div>
+<div class="cv-contact">
+<span>Saint-Ouen (93)</span>
+<span>06.10.33.35.90</span>
+<span>marie-adrait@hotmail.fr</span>
+<span>Permis B</span>
+</div>
+</div>
+</div>
+<div class="cv-bio">Cheffe de Projet Audiovisuel &amp; Contenu cr&eacute;ative et rigoureuse, avec 4 ans d'exp&eacute;rience dans le pilotage de projets vid&eacute;o pour des marques premium (L'Or&eacute;al, Chanel, Van Cleef &amp; Arpels, Tissot, Cr&eacute;dit Agricole). De la conception artistique &agrave; la livraison finale, je coordonne des &eacute;quipes pluridisciplinaires avec un sens aigu du d&eacute;tail, des d&eacute;lais et de la relation client. Cofondatrice d'un m&eacute;dia rap digital (12 000+ abonn&eacute;s), j'allie vision cr&eacute;ative et rigueur op&eacute;rationnelle.</div>
+<div class="cv-section">
+<h3>Exp&eacute;riences professionnelles</h3>
+<div class="exp-card">
+<div class="exp-date">Nov. 2023 &ndash; Pr&eacute;sent<span class="dur">CDI</span></div>
+<div class="exp-body">
+<h4>Cheffe de Projet Audiovisuel</h4>
+<div class="exp-company">Peech Studio</div>
+<ul>
+<li>Pilotage de projets vid&eacute;o A&ndash;Z pour moyens et grands comptes (L'Or&eacute;al, Tissot, Chanel, Van Cleef &amp; Arpels, Air Cara&iuml;bes, Cr&eacute;dit Agricole...)</li>
+<li>Conception des recommandations artistiques et &eacute;ditoriales</li>
+<li>Coordination des &eacute;quipes projets : DA, cr&eacute;atifs, prestataires</li>
+<li>Organisation et suivi des tournages</li>
+<li>Suivi complet pr&eacute;-production &rarr; post-production : motion 2D/3D, vid&eacute;o r&eacute;el, podcast, UGC &mdash; dans le respect des budgets et d&eacute;lais</li>
+<li>Management d'une alternante</li>
+<li>Gestion, fid&eacute;lisation client et upsell</li>
+</ul>
+</div>
+</div>
+<div class="exp-card">
+<div class="exp-date">Jan. 2021 &ndash; Jan. 2024<span class="dur">Entrepreneuriat &ndash; 3 ans</span></div>
+<div class="exp-body">
+<h4>Cofondatrice &amp; Productrice Ex&eacute;cutive</h4>
+<div class="exp-company">La Room (M&eacute;dia Rap)</div>
+<ul>
+<li>Cr&eacute;ation et d&eacute;veloppement d'un m&eacute;dia digital d&eacute;di&eacute; aux artistes rap &eacute;mergents &mdash; 12 000+ followers</li>
+<li>Direction &eacute;ditoriale : conception, r&eacute;daction, production et animation des &eacute;missions YouTube et Twitch</li>
+<li>Talent &amp; Community Management &mdash; organisation des tournages</li>
+</ul>
+</div>
+</div>
+<div class="exp-card">
+<div class="exp-date">2022<span class="dur">CDD &ndash; 2 mois</span></div>
+<div class="exp-body">
+<h4>Cheffe de Projet Contenu Junior</h4>
+<div class="exp-company">Quadrimage</div>
+<ul>
+<li>Recommandations strat&eacute;giques et &eacute;ditoriales, coordination de projets</li>
+<li>Organisation d'un s&eacute;minaire &mdash; production de films institutionnels</li>
+</ul>
+</div>
+</div>
+<div class="exp-card">
+<div class="exp-date">2020 &ndash; 2022<span class="dur">Stage &ndash; 8 mois</span></div>
+<div class="exp-body">
+<h4>Assistante Cheffe de Projet &Eacute;v&eacute;nementiel</h4>
+<div class="exp-company">&mdash;</div>
+<ul>
+<li>&Eacute;laboration des recommandations strat&eacute;giques et &eacute;ditoriales</li>
+<li>Coordination et production de projets &eacute;v&eacute;nementiels institutionnels</li>
+<li>Production de films institutionnels</li>
+</ul>
+</div>
+</div>
+<div class="exp-card">
+<div class="exp-date">2019<span class="dur">Stage &ndash; 6 mois</span></div>
+<div class="exp-body">
+<h4>Assistante Directrice de Casting</h4>
+<div class="exp-company">&mdash;</div>
+<ul>
+<li>Direction de casting et organisation logistique d'un s&eacute;minaire d'entreprise</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="cv-section">
+<h3>Comp&eacute;tences &amp; Outils</h3>
+<div class="skills-grid">
+<div class="skill-group">
+<h4>Savoir-faire</h4>
+<div class="skill-tags">
+<span class="tag">Gestion de projet</span>
+<span class="tag">Management d'&eacute;quipe</span>
+<span class="tag">Relation client</span>
+<span class="tag">Aisance relationnelle</span>
+<span class="tag">Cr&eacute;ativit&eacute;</span>
+</div>
+</div>
+<div class="skill-group">
+<h4>Outils</h4>
+<div class="skill-tags">
+<span class="tag">Final Cut Pro</span>
+<span class="tag">CapCut</span>
+<span class="tag">Photoshop / Canva</span>
+<span class="tag">Airtable</span>
+<span class="tag">Suite Office</span>
+<span class="tag">R&eacute;seaux Sociaux</span>
+</div>
+</div>
+<div class="skill-group">
+<h4>IA &amp; Tech</h4>
+<div class="skill-tags">
+<span class="tag">Perplexity</span>
+<span class="tag">Leonardo</span>
+<span class="tag">Claude</span>
+<span class="tag">Midjourney</span>
+</div>
+</div>
+</div>
+</div>
+<div class="cv-section">
+<h3>Formation</h3>
+<div class="edu-item">
+<div class="edu-year">2020 &ndash; 2022</div>
+<div><div class="edu-detail">MBA Communication Production Audiovisuelle</div><div class="edu-school">EFAP Paris</div></div>
+</div>
+<div class="edu-item">
+<div class="edu-year">2016 &ndash; 2019</div>
+<div><div class="edu-detail">Licence Information Communication</div><div class="edu-school">Institut Catholique de Paris</div></div>
+</div>
+<div class="edu-item">
+<div class="edu-year">2017 &ndash; 2018</div>
+<div><div class="edu-detail">Erasmus Budapest (6 mois)</div><div class="edu-school">P&aacute;zm&aacute;ny P&eacute;ter University</div></div>
+</div>
+<div class="edu-item">
+<div class="edu-year">2016</div>
+<div><div class="edu-detail">Bac Litt&eacute;raire (mention assez bien)</div><div class="edu-school">Institut Notre Dame de St Germain en Laye</div></div>
+</div>
+</div>
+<div class="cv-section">
+<h3>Langues</h3>
+<div class="lang-row">
+<div class="lang-item"><span class="tag cdi">Fran&ccedil;ais</span><span class="lang-level">Natif</span></div>
+<div class="lang-item"><span class="tag cdi">Anglais</span><span class="lang-level">C2 (courant)</span></div>
+<div class="lang-item"><span class="tag">Espagnol</span><span class="lang-level">B2</span></div>
+</div>
+</div>
+<div class="cv-section">
+<h3>Centres d'int&eacute;r&ecirc;t</h3>
+<div class="interests-row">
+<span class="tag">Th&eacute;&acirc;tre (10 ans, Conservatoire)</span>
+<span class="tag">Cin&eacute;ma &amp; com&eacute;dies musicales</span>
+<span class="tag">Humanitaire (Ordre de Malte, Orphelinat au Vietnam)</span>
+<span class="tag">Musique &amp; cr&eacute;ation</span>
+<span class="tag">Voyages &amp; cultures</span>
+<span class="tag">Audiovisuel (vlogs &amp; vid&eacute;os)</span>
+</div>
+</div>
+</div>
+<footer>Veille automatis&eacute;e &mdash; Donn&eacute;es collect&eacute;es le 9 sept. 2026 &bull; Agent IA pour Marie Adrait</footer>
+</div>
+<script src="data.js"></script>
+<script src="data2.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
