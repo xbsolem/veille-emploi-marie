@@ -132,7 +132,7 @@ function renderOffers() {
               <div class="info-item"><div class="k">Salaire</div><div class="v">${o.salary === 'NC' ? 'Non communique' : o.salary + ' EUR'}</div></div>
               <div class="info-item"><div class="k">Experience</div><div class="v">${o.experience}</div></div>
               <div class="info-item"><div class="k">Secteur</div><div class="v">${o.sector}</div></div>
-              <div class="info-item"><div class="k">Urgence</div><div class="v">${o.urgency === 'haute' ? 'Haute' : 'Moyenne'}</div></div>
+              <div class="info-item"><div class="k">Urgence</div><div class="v">${o.urgency === 'haute' ? 'Haute' : o.urgency === 'basse' ? 'Basse' : 'Moyenne'}</div></div>
             </div>
             <div class="score-bar"><div class="score-bar-fill" style="width:${o.score}%;background:${scoreColor(o.score)}"></div></div>
             <div class="tags-row">
